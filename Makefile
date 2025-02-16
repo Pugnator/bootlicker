@@ -1,4 +1,4 @@
-CC_X64	:= x86_64-w64-mingw32-gcc
+CC_X64	:= gcc
 
 CFLAGS	:= $(CFLAGS) -Os -fno-asynchronous-unwind-tables -nostdlib 
 CFLAGS 	:= $(CFLAGS) -fno-ident -fpack-struct=8 -falign-functions=1
@@ -27,7 +27,7 @@ COREOB	:= $(CORESC:%.c=%.o)
 all: $(BOOTOB) $(KERNOB) $(COREOB) $(USEROB)
 	@ nasm -f win64 asm/x64/GetIp.asm -o obj/GetIp.x64.o
 	@ $(CC_X64) $(CFLAGS) $(LFLAGS) obj/*.o -o $(OUTX64)
-	@ python3 python3/extract.py -f $(OUTX64) -o $(BINX64)
+	@ python python3/extract.py -f $(OUTX64) -o $(BINX64)
 
 ##
 ## Build all the usermode object files

